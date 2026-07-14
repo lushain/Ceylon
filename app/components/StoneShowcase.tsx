@@ -115,7 +115,7 @@ export default function StoneShowcase() {
             <div key={i} className="stone-fade">
               <p
                 className="eyebrow min-h-[2.6em] leading-[1.3]"
-                style={{ color: "var(--stone-hi)" }}
+                style={{ color: "color-mix(in srgb, var(--stone-hi) 55%, var(--color-ivory))" }}
               >
                 {stone.tag}
               </p>

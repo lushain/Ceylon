@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Gem from "./Gem";
 import Reveal from "./Reveal";
-import { catalog, catalogTypes, type CatalogType } from "../gemstones-catalog";
+import { catalog, catalogTypes, slugify, type CatalogType } from "../gemstones-catalog";
 
 const decorativeFilters: [string, string[]][] = [
   ["Carat", ["0.5ct–10ct+"]],
@@ -80,20 +81,25 @@ export default function GemstoneCatalog() {
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((g, i) => (
-            <Reveal
-              key={g.name}
-              delay={(i % 3) * 70}
-              className="border border-hairline bg-ink/30 transition-colors hover:border-ivory/25"
-            >
-              <div className="relative aspect-square overflow-hidden border-b border-hairline p-8">
-                <Gem tone={g.tone} className="gem-float" style={{ animationDelay: `${(i % 5) * 0.6}s` }} />
-              </div>
-              <div className="p-5">
-                <span className="mono block text-[0.62rem] tracking-[0.1em] text-slate/70 uppercase">{g.cert}</span>
-                <h3 className="display mt-2 text-[1.1rem] text-ivory">{g.name}</h3>
-                <p className="mt-1 text-[0.78rem] text-slate">{g.specs}</p>
-                <p className="mono mt-2 text-[0.92rem] text-ivory">{g.price}</p>
-              </div>
+            <Reveal key={g.name} delay={(i % 3) * 70}>
+              <Link
+                href={`/gemstones/${slugify(g.name)}`}
+                className="group block border border-hairline bg-ink/30 p-0! m-0! transition-colors hover:border-ivory/25"
+              >
+                <div className="relative aspect-square overflow-hidden border-b border-hairline p-8">
+                  <Gem
+                    tone={g.tone}
+                    className="gem-float transition-transform duration-500 group-hover:scale-105"
+                    style={{ animationDelay: `${(i % 5) * 0.6}s` }}
+                  />
+                </div>
+                <div className="p-5">
+                  <span className="mono block text-[0.62rem] tracking-[0.1em] text-slate/70 uppercase">{g.cert}</span>
+                  <h3 className="display mt-2 text-[1.1rem] text-ivory">{g.name}</h3>
+                  <p className="mt-1 text-[0.78rem] text-slate">{g.specs}</p>
+                  <p className="mono mt-2 text-[0.92rem] text-ivory">{g.price}</p>
+                </div>
+              </Link>
             </Reveal>
           ))}
         </div>

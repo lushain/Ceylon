@@ -107,6 +107,32 @@ body {
   border-radius: 2px;
 }
 
+/* ---- Site header ---- */
+/* the scrim/shadow live on a pseudo-layer so they can fade in on scroll
+   without touching the nav content's own opacity */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    var(--scrim-tint) 0%,
+    color-mix(in srgb, var(--scrim-tint) 50%, transparent) 70%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.site-header.is-scrolled::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ---- Display type ---- */
 .display {
   font-family: var(--font-display);

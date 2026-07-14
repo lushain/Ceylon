@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
+
+const SCROLL_THRESHOLD = 24;
 
 const NAV_LINKS = [
   { label: "Our Story", href: "/our-story" },
@@ -30,9 +33,17 @@ const GEMSTONES_PANEL = [
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className={`site-header fixed inset-x-0 top-0 z-50 ${scrolled ? "is-scrolled" : ""}`}>
       <nav className="mx-auto flex max-w-[1240px] items-center justify-between px-6 py-5 md:px-10">
         <Link href="/" className="display text-[1.4rem] tracking-[0.02em] text-ivory">
           Ceylon
