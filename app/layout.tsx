@@ -29,13 +29,25 @@ export const metadata: Metadata = {
     "Ethically sourced Ceylon sapphire, spinel, alexandrite and moonstone, cut for the light and set by hand into heirlooms. Mine-to-hand traceability from Ratnapura, Sri Lanka.",
 };
 
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem("ceylon-theme");
+    document.documentElement.setAttribute("data-theme", stored === "dark" ? "dark" : "light");
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body
         className={`${fraunces.variable} ${hanken.variable} ${plexMono.variable}`}
       >

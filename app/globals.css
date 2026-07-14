@@ -17,6 +17,18 @@
 
 :root {
   color-scheme: dark;
+  /* Base surface & text tokens — the light theme below overrides these */
+  --color-ink: #0b1220;
+  --color-abyss: #070b13;
+  --color-ivory: #ece7dd;
+  --color-slate: #8a94a6;
+  --color-hairline: #1c2536;
+  --scrim-tint: rgba(7, 11, 19, 0.86);
+  --cursor-a: #ffffff;
+  --cursor-b: #dfe6f2;
+  --cursor-glow: rgba(255, 255, 255, 0.8);
+  --cursor-glow-soft: rgba(255, 255, 255, 0.4);
+
   /* Ambient lighting — shifted by the Daylight/Candlelight toggle */
   --amb-1: #0c1424;
   --amb-2: #070b13;
@@ -42,6 +54,27 @@
   --gem-3: #5a182f;
   --gem-hi: #ffb1a0;
   --gem-shadow: rgba(183, 54, 91, 0.5);
+}
+
+/* ---- Light theme — same cool sapphire identity, porcelain instead of ink ---- */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: #ffffff;
+  --color-abyss: #f2f4f8;
+  --color-ivory: #10141c;
+  --color-slate: #5c6472;
+  --color-hairline: #dde2ea;
+  --scrim-tint: rgba(242, 244, 248, 0.9);
+  /* cursor stays white in both themes — see :root */
+
+  --amb-1: #e9f0fb;
+  --amb-2: #f2f4f8;
+  --amb-glow: rgba(78, 121, 224, 0.12);
+}
+:root[data-theme="light"][data-light="candle"] {
+  --amb-1: #fbf0e0;
+  --amb-2: #f7f2e8;
+  --amb-glow: rgba(228, 164, 92, 0.16);
 }
 
 * {
@@ -218,9 +251,40 @@ body {
   transform: translateX(calc(var(--w) - 34px));
 }
 
+.footer-wordmark hr {
+  bottom: 0.16em;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--color-hairline);
+  color: var(--color-ivory);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 0.4s ease,
+    color 0.4s ease,
+    transform 0.3s ease;
+}
+.theme-toggle:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  color: var(--accent);
+  transform: rotate(14deg);
+}
+
 .hairline {
   border: 0;
   border-top: 1px solid var(--color-hairline);
+}
+
+a:not(.btn-fill) {
+  padding: 0.2em 0.4em;
+  margin: -0.2em -0.4em;
 }
 
 .link-underline {
@@ -228,6 +292,7 @@ body {
   background-size: 0% 1px;
   background-position: 0 100%;
   background-repeat: no-repeat;
+  background-origin: content-box;
   transition: background-size 0.4s ease;
 }
 .link-underline:hover {
@@ -333,15 +398,23 @@ body {
 .provenance-photo {
   filter: saturate(0.85) brightness(0.88) contrast(1.05);
 }
+:root[data-theme="light"] .story-photo,
+:root[data-theme="light"] .step-photo,
+:root[data-theme="light"] .provenance-photo {
+  filter: saturate(0.95) brightness(1.02) contrast(1.02);
+}
 
 .closing-photo {
   filter: saturate(0.7) brightness(0.55) contrast(1.05) blur(1px);
+}
+:root[data-theme="light"] .closing-photo {
+  filter: saturate(0.85) brightness(1.05) contrast(1.02) blur(1px);
 }
 .closing-scrim {
   background: linear-gradient(
     180deg,
     var(--color-abyss) 0%,
-    rgba(7, 11, 19, 0.86) 40%,
+    var(--scrim-tint) 40%,
     var(--color-abyss) 100%
   );
 }
@@ -381,10 +454,11 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 999px;
-  background: radial-gradient(circle at 36% 30%, #ffffff 0%, #dfe6f2 55%, transparent 78%);
+  background: radial-gradient(circle at 36% 30%, var(--cursor-a) 0%, var(--cursor-b) 55%, transparent 78%);
   box-shadow:
-    0 0 3px 1px rgba(255, 255, 255, 0.8),
-    0 0 10px 2px rgba(255, 255, 255, 0.4);
+    0 0 3px 1px var(--cursor-glow),
+    0 0 10px 2px var(--cursor-glow-soft);
+  transition: background 0.4s ease;
 }
 
 .btn-fill,

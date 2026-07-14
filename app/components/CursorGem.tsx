@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 const MAGNETIC_SELECTOR = "a, button";
-const RADIUS = 100;
+const RADIUS = 64;
 
 export default function CursorGem() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -48,6 +48,9 @@ export default function CursorGem() {
         const ny = Math.max(r.top, Math.min(raw.current.y, r.bottom));
         const dist = Math.hypot(raw.current.x - nx, raw.current.y - ny);
         if (dist < RADIUS && dist < nearestDist) {
+          // skip elements hidden via visibility (e.g. a closed dropdown panel
+          // still in the DOM) — they shouldn't attract the cursor
+          if (getComputedStyle(el).visibility === "hidden") continue;
           nearestDist = dist;
           nearest = el;
           targetX = r.left + r.width / 2;
@@ -72,7 +75,7 @@ export default function CursorGem() {
       if (dot) {
         const scale = nearest ? 0.55 : 1;
         dot.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) translate(-50%, -50%) scale(${scale})`;
-        dot.style.opacity = raw.current.has ? (nearest ? "0.7" : "1") : "0";
+        dot.style.opacity = raw.current.has && !nearest ? "1" : "0";
       }
 
       rafId = requestAnimationFrame(tick);

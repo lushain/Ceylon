@@ -41,8 +41,8 @@ export default function StoneShowcase() {
                 defaultSelected={0}
                 onChange={(index) => setI(index)}
                 side="left"
-                textColor="#5b667a"
-                activeColor="#ece7dd"
+                textColor="var(--color-slate)"
+                activeColor="var(--color-ivory)"
                 fontSize={2.5}
                 spacing={1.5}
                 curve={1}

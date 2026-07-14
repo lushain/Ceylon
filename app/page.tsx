@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Gem from "./components/Gem";
 import Reveal from "./components/Reveal";
 import StoneShowcase from "./components/StoneShowcase";
+import SiteHeader from "./components/SiteHeader";
+import SiteFooter from "./components/SiteFooter";
 
 type Light = "day" | "candle";
 
@@ -52,30 +55,24 @@ const stories = [
 
 export default function Home() {
   const [light, setLight] = useState<Light>("day");
+  const [isLightTheme, setIsLightTheme] = useState(false);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const sync = () => setIsLightTheme(root.getAttribute("data-theme") !== "dark");
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isLightTheme) setLight("day");
+  }, [isLightTheme]);
 
   return (
     <div data-light={light === "candle" ? "candle" : "day"} className="stage min-h-screen">
-      {/* ---------- Nav ---------- */}
-      <header className="fixed inset-x-0 top-0 z-50">
-        <nav className="mx-auto flex max-w-[1240px] items-center justify-between px-6 py-5 md:px-10">
-          <a href="#top" className="display text-[1.4rem] tracking-[0.02em] text-ivory">
-            Ceylon
-          </a>
-          <div className="hidden items-center gap-9 text-[0.82rem] text-slate md:flex">
-            {["Gemstones", "Bespoke", "Provenance", "Stories"].map((l) => (
-              <a key={l} href={`#${l.toLowerCase()}`} className="link-underline text-ivory/75 hover:text-ivory">
-                {l}
-              </a>
-            ))}
-          </div>
-          <a
-            href="#bespoke"
-            className="btn-fill hidden border border-hairline px-5 py-2.5 text-[0.78rem] tracking-[0.14em] text-ivory uppercase transition-colors hover:text-abyss md:inline-block"
-          >
-            Start your design
-          </a>
-        </nav>
-      </header>
+      <SiteHeader />
 
       {/* ---------- Hero ---------- */}
       <section id="top" className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-10 px-6 pt-36 pb-20 md:grid-cols-[1.05fr_0.95fr] md:px-10 md:pt-44 md:pb-28">
@@ -103,18 +100,18 @@ export default function Home() {
           </p>
 
           <div className="reveal mt-10 flex flex-wrap items-center gap-4" style={{ animationDelay: "0.4s" }}>
-            <a
-              href="#bespoke"
+            <Link
+              href="/bespoke"
               className="btn-fill border border-ivory/25 px-7 py-3.5 text-[0.8rem] tracking-[0.16em] text-ivory uppercase transition-colors hover:text-abyss"
             >
               Start your design
-            </a>
-            <a
-              href="#gemstones"
+            </Link>
+            <Link
+              href="/gemstones"
               className="link-underline py-3.5 text-[0.8rem] tracking-[0.16em] text-slate uppercase hover:text-ivory"
             >
               Browse gemstones
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -139,8 +136,9 @@ export default function Home() {
                 role="switch"
                 aria-checked={light === "candle"}
                 aria-label="Toggle light source between daylight and candlelight"
+                disabled={isLightTheme}
                 onClick={() => setLight((l) => (l === "day" ? "candle" : "day"))}
-                className="toggle"
+                className={`toggle ${isLightTheme ? "opacity-40 cursor-not-allowed" : ""}`}
               >
                 <span className="toggle-knob" />
               </button>
@@ -148,7 +146,8 @@ export default function Home() {
                 type="button"
                 onClick={() => setLight("candle")}
                 aria-pressed={light === "candle"}
-                className={`mono text-[0.7rem] tracking-[0.18em] uppercase transition-colors ${light === "candle" ? "text-ivory" : "text-slate hover:text-ivory/70"}`}
+                disabled={isLightTheme}
+                className={`mono text-[0.7rem] tracking-[0.18em] uppercase transition-colors ${isLightTheme ? "cursor-not-allowed text-slate/40" : light === "candle" ? "text-ivory" : "text-slate hover:text-ivory/70"}`}
               >
                 Candlelight
               </button>
@@ -213,12 +212,12 @@ export default function Home() {
           </div>
 
           <Reveal delay={120} className="mt-14">
-            <a
-              href="#top"
+            <Link
+              href="/bespoke"
               className="btn-fill inline-block border border-ivory/25 px-8 py-4 text-[0.8rem] tracking-[0.16em] text-ivory uppercase transition-colors hover:text-abyss"
             >
               Begin a commission
-            </a>
+            </Link>
           </Reveal>
         </div>
       </section>
@@ -270,9 +269,9 @@ export default function Home() {
                 <p className="eyebrow mt-6">{s.kicker}</p>
                 <h3 className="display mt-3 text-[1.5rem] leading-tight text-ivory">{s.title}</h3>
                 <p className="mt-3 text-[0.9rem] leading-relaxed text-slate">{s.body}</p>
-                <a href="#" className="link-underline mt-5 self-start text-[0.76rem] tracking-[0.14em] text-ivory/80 uppercase">
+                <Link href="/our-story" className="link-underline mt-5 self-start text-[0.76rem] tracking-[0.14em] text-ivory/80 uppercase">
                   Read the story
-                </a>
+                </Link>
               </Reveal>
             ))}
           </div>
@@ -295,59 +294,17 @@ export default function Home() {
             <h2 className="display mx-auto mt-6 max-w-[18ch] text-[clamp(2.4rem,6vw,4.6rem)] text-ivory">
               Bring us the light you want to keep.
             </h2>
-            <a
-              href="#top"
+            <Link
+              href="/bespoke"
               className="btn-fill mt-12 inline-block border border-ivory/30 px-10 py-4 text-[0.82rem] tracking-[0.18em] text-ivory uppercase transition-colors hover:text-abyss"
             >
               Start your design
-            </a>
+            </Link>
           </Reveal>
         </div>
       </section>
 
-      {/* ---------- Footer ---------- */}
-      <footer className="border-t border-hairline">
-        <div className="mx-auto max-w-[1240px] px-6 py-16 md:px-10">
-          <div className="flex flex-col justify-between gap-10 md:flex-row">
-            <div>
-              <p className="display text-[1.6rem] text-ivory">Ceylon</p>
-              <p className="mt-3 max-w-[30ch] text-[0.85rem] leading-relaxed text-slate">
-                Gemstones &amp; bespoke fine jewellery, sourced from Sri Lanka and
-                set by hand.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-x-14 gap-y-8 sm:grid-cols-3">
-              {[
-                { h: "Explore", l: ["Gemstones", "Bespoke", "Provenance", "Stories"] },
-                { h: "Care", l: ["Certification", "Shipping", "Insurance", "Contact"] },
-                { h: "Reach us", l: ["hello@ceylon.gems", "+94 45 000 000", "Colombo · London"] },
-              ].map((col) => (
-                <div key={col.h}>
-                  <p className="mono text-[0.64rem] tracking-[0.18em] text-slate/70 uppercase">{col.h}</p>
-                  <ul className="mt-4 space-y-2.5">
-                    {col.l.map((item) => (
-                      <li key={item}>
-                        <a href="#" className="link-underline text-[0.85rem] text-ivory/80 hover:text-ivory">
-                          {item}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-          <hr className="hairline my-10" />
-          <div className="flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
-            <p className="mono text-[0.66rem] tracking-[0.14em] text-slate/70 uppercase">
-              © {new Date().getFullYear()} Ceylon Gemstones
-            </p>
-            <p className="mono text-[0.66rem] tracking-[0.14em] text-slate/70 uppercase">
-              Untreated · Certified · Traceable
-            </p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
