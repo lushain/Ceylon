@@ -293,9 +293,10 @@ body {
   background: transparent;
   cursor: pointer;
   transition:
-    border-color 0.4s ease,
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.4s ease,
-    transform 0.3s ease;
+    transform 0.3s ease,
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .theme-toggle:hover {
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
@@ -319,7 +320,11 @@ a:not(.btn-fill) {
   background-position: 0 100%;
   background-repeat: no-repeat;
   background-origin: content-box;
-  transition: background-size 0.4s ease;
+  transition:
+    background-size 0.4s ease,
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .link-underline:hover {
   background-size: 100% 1px;
@@ -491,8 +496,17 @@ a:not(.btn-fill) {
 .toggle {
   transition:
     color 0.5s ease,
-    border-color 0.4s ease,
-    box-shadow 0.4s ease;
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* baseline so the magnetic glow grows in and fades out smoothly on every
+   link/button, not just the ones with their own transition rule above */
+a,
+button {
+  transition:
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 a.magnet-active,
 button.magnet-active {
